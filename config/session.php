@@ -17,7 +17,7 @@ return [
     |            "redis", "dynamodb", "array"
     |
     */
-
+    
     'driver' => env('SESSION_DRIVER', 'database'),
 
     /*
@@ -157,7 +157,7 @@ return [
     */
 
     'domain' => env('SESSION_DOMAIN'),
-
+    
     /*
     |--------------------------------------------------------------------------
     | HTTPS Only Cookies
