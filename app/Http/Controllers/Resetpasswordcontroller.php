@@ -47,7 +47,7 @@ class Resetpasswordcontroller extends Controller
             return response()->json(['error' => 'Token expired'], 403);
         }
         
-        if (!Hash::check($request->token, $record->token)) {
+        if (!Hash::check($request['token'], $record->token)) {
             return response()->json(['error' => 'Invalid token'], 403);
         }
         

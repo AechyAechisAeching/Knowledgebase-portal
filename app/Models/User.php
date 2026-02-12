@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Auth;
+
+
+$user = Auth::user();
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-
+    // Use notifications for password resets and emails.
     use Notifiable;
     /**
      * The attributes that are mass assignable.
@@ -24,6 +28,7 @@ class User extends Authenticatable
         'password',
     ];
 
+    
     /**
      * The attributes that should be hidden for serialization.
      *
