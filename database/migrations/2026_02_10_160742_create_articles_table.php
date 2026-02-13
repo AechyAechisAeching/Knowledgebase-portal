@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('title');
             $table->longText('content')->nullable();
             $table->longText('summary')->nullable();
-            $table->string('slug')->unique();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->boolean('status')->default(false);

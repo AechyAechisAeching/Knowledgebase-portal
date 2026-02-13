@@ -4,15 +4,12 @@ use App\Http\Controllers\ArticleController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Resetpasswordcontroller;
 use Illuminate\Support\Facades\Route;
-use Laravel\Sanctum\Sanctum;
-
 
 // Login endpoint om te kunnen inloggen met een bestaand account
 Route::post('/login', [AuthController::class,"login"])->name('login');
 // Register endpoint voor het registreren van een nieuw account
 Route::post('/register', [AuthController::class,"register"])->name('register');
 // Password request endpoint voor het aanvragen van een wachtwoord reset
-
 // Wachtwoord reset endpoint voor het resetten van een wachtwoord met een token
 Route::post('/password/request', [Resetpasswordcontroller::class,'request']);
 Route::post('/password/reset', [Resetpasswordcontroller::class,'reset']);
@@ -27,8 +24,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Logout endpoint voor het uitloggen van een ingelogde gebruiker
+    Route::middleware('auth:sanctum')->post
+    ('/logout', [AuthController::class, 'logout']);
 
-});
+    
+    });
 
 Route::post('/articles', [ArticleController::class,'store']);
     

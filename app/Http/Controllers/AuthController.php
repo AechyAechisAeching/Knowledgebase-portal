@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LogoutRequest;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
+
     public function register(RegisterRequest $request) {
         $validated = $request->validated();
 
@@ -54,6 +56,23 @@ class AuthController extends Controller
         'token' => $token,
         'user' => $user,
     ]);
+}
+
+public function logout(LogoutRequest $request) {
+
+$user = $request->user();
+if (! $user) {
+    return response()->json([
+    'success' => false,    
+    'message'=> 'Unauthorized'],401);
+}
+    
+    $user->currentAccessToken()->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Successfully logged out your account!'
+        ],200);
 }
 
     }
