@@ -23,6 +23,21 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        DB::table('projects')-> insert([
+            'projectname' => 'api laravel',
+            'customer_id' => '44353453',
+            'description' => 'api for app',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('categories')->insert([
+            'name' => 'Tech',
+            'slug' => 'tech',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
         DB::table('articles')->insert([
             [
                 'title' => 'First test article',
@@ -32,6 +47,8 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
                 'status' => false,
                 'visibility' => true,
+                'category_id' => 1
+                
             ],
             [
                 'title' => 'Second test article',
@@ -41,6 +58,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
                 'status' => false,
                 'visibility' => true,
+                'category_id' => 1
             ],
         ]);
     }

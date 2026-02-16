@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ProjectsController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Resetpasswordcontroller;
 use Illuminate\Support\Facades\Route;
@@ -32,9 +33,12 @@ Route::middleware('auth:sanctum')->group(function () {
     
     });
 
-    Route::resource('categories', CategoryController::class);
+    // ! Project & Articles
 
-
-
-Route::post('/articles', [ArticleController::class,'store']);
+    //  Endpoint voor Projecten
+    Route::post('/projects', [ProjectsController::class,'store']);
     
+Route::apiResource('categories',
+CategoryController::class);
+Route::apiResource('articles',
+ArticleController::class);

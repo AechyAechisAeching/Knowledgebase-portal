@@ -4,46 +4,42 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-
 class CategoryController extends Controller
 {
-  public function index()
-  {
-    response()->json(Category::all());
+  public function index() {
+    return
+    Category::withCount('articles')->get();
   }
   public function store(Request $request)
   {
-    $validated = $request->validate([
-        'name' => 'required|string',
-        ]);
+    $data = $request->validate([
+      'name' => 'required',
+      'slug' => 'required|unique:categories,slug,'
+    ]);
 
-        $validated['slug'] =
-        Str::slug($validated['name']);
+      $category = Category::create($data);
 
-        $category = Category::create($validated);
-        return response()->json($category, 201);
+      return response()->json($category, 201);
+    }
 
-  }
   public function show(Category $category) {
-    return response()->json($category);
+    return $category->load('articles');
   }
 
-  public function update(Request $request, Category $category) {
-    $validated = $request->validate([
-        'name' => 'sometimes|required|string',
-        ]);
-  
-      if (isset($validated['name'])) {
-        $validated['slug'] =
-        Str::slug($validated['name']);
-  }
-  $category->update($validated);
-
-  return response()->json($category);
+  public function update(Request $request, Category $category)
+  {
+    $data = $request->validate([
+      'name' => 'sometimes|required',
+      'slug' => 'sometimes|required|unique|categories,slug,'
+      . $category->id
+    ]);
+    $category->update($data);
+    return $category;
   }
   public function destroy(Category $category) {
     $category->delete();
-    return response()->json(['message' => 'Deleted Category']);
+    return response()->json([
+      'message' => 'Deleted'
+    ]);
   }
 }
