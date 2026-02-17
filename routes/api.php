@@ -32,8 +32,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ! Project & Articles
 
+    // Attachments: article_id, mime, original_name, size, path
+    /**
+     * Store an attachment for an article
+     */
+    // Route::apiResource('attachments', ArticleController::class);
+
     //  Endpoint voor Projecten
     Route::post('/projects', [ProjectsController::class, 'store']);
+
 
     Route::apiResource(
         'categories',
@@ -44,5 +51,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ArticleController::class
     );
     });
+    Route::post('/articles/attachment', [ArticleController::class, 'storeAttachment']);
 
    

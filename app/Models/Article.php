@@ -3,6 +3,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Mail\Attachment;
 
 class Article extends Model
 {
@@ -21,6 +22,13 @@ class Article extends Model
         'category_id'
 
     ];
+
+    public function attachments() {
+        return 
+        $this->hasMany(Attachment::class);
+        
+    }
+
 
         public function category() {
          return $this->belongsTo(Category::class);

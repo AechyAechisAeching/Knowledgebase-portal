@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\Article;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
-
+use App\Models\Attachment;
 class ArticleController extends Controller
 {
     public function index() {
@@ -20,8 +22,34 @@ class ArticleController extends Controller
         ]);
         return Article::create($data);
     }
+
+    public function storeAttachment(Request $request): JsonResponse
+    {
+        
+        $data = $request->validate([
+            'file' => 'required',
+            'article_id' => 'required|exists:articles,id'
+        ]);
+                
+        
+        
+        
+        new JsonResponse($data);
+        $file = Storage::put('attachments', $data['file']);
+        $attachment = Attachment::create(
+            [
+                'article_id' => $data['article_id'],
+                'path' => $file,
+                'mime' => $data['file']->getMimeType(),
+                'original_name' => $data['file']->getClientOriginalName(),
+                'size' => $data['file']->getSize()
+            ],
+        );
+        return new JsonResponse($attachment);
+    }
+
     public function show(Article $article) {
-        return
+        
         $article->load('category');
     }
 
