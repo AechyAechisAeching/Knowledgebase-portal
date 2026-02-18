@@ -5,9 +5,7 @@ use Carbon\Traits\Timestamp;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-
+use App\Models\User;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -22,6 +20,16 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        /** 
+         * Run the database factories
+        */
+
+        User::factory()
+        ->count(10)
+        ->create();
+
+        /* ------------------------------------ */
 
         DB::table('categories')->insert([
             'name' => 'Tech',
@@ -45,7 +53,8 @@ class DatabaseSeeder extends Seeder
                 'summary' => 'Project summary in short',
                 'created_at' => now(),
                 'updated_at' => now(),
-                'status' => false,
+                'status' => 'published',
+                'visibility' => 'public',
                 'category_id' => 1
                 
             ],
@@ -55,7 +64,8 @@ class DatabaseSeeder extends Seeder
                 'summary' => 'Project summary in short',
                 'created_at' => now(),
                 'updated_at' => now(),
-                'status' => false,
+                'status' => 'published',
+                'visibility' => 'public',
                 'category_id' => 1
             ],
         ]);

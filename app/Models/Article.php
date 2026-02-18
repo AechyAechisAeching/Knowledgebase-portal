@@ -4,7 +4,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\Attachment;
-
 class Article extends Model
 {
 
@@ -19,8 +18,13 @@ class Article extends Model
         'content',
         'summary',
         'status',
+        'visibility',
         'category_id'
+    ];
 
+    protected $casts = [
+        'visibility' => 'string',
+        'status' => 'string'
     ];
 
     public function attachments() {

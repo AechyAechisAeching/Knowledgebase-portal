@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 $user = Auth::user();
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     // Use notifications for password resets and emails.
     use Notifiable;
@@ -25,7 +26,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'address',
+        'company',
         'password',
+        'phone_number'
     ];
 
     
@@ -51,7 +55,5 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public $timestamps = true;
-
     
 }

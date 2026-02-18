@@ -18,6 +18,8 @@ class ArticleController extends Controller
             'title' => 'required',
             'content' => 'required',
             'summary' => 'nullable',
+            'visibility' => 'string',
+            'status' => 'string',
             'category_id' => 'required|exists:categories,id'
         ]);
         return Article::create($data);
@@ -58,6 +60,8 @@ class ArticleController extends Controller
             'title' => 'sometimes|required',
             'content' => 'sometimes|required',
             'summary' => 'sometimes|nullable',
+            'visibility' => 'sometimes|required',
+            'status' => 'sometimes|required',
             'category_id' => 'sometimes|required|exists:categories,id'
         ]);
         $article->update($data);
@@ -71,6 +75,5 @@ class ArticleController extends Controller
         ]);
 
         }
-    
 }
 

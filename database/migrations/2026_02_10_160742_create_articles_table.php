@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('title');
             $table->longText('content')->nullable();
             $table->longText('summary')->nullable();
-            $table->boolean('status')->default(false);
+            $table->enum('status', ['published', 'withdrawn', 'in progress'])->default('published'); 
+            $table->enum('visibility', ['public', 'private'])->default('public');
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             
