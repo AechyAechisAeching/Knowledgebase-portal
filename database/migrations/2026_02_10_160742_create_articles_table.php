@@ -23,7 +23,6 @@ return new class extends Migration
             $table->enum('visibility', ['public', 'private'])->default('public');
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
-            
         });
     }
 

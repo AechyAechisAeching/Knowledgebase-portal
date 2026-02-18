@@ -46,6 +46,22 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
         
+         DB::table('tags')->insert([
+            [
+                'name' => 'personal',
+                'created_at' => now(),
+                'updated_at' => now(),
+                
+            ],
+            [
+                'name' => 'php',
+                'created_at' => now(),
+                'updated_at' => now(),
+                ],
+        ]);
+
+
+
         DB::table('articles')->insert([
             [
                 'title' => 'First test article',
@@ -58,6 +74,7 @@ class DatabaseSeeder extends Seeder
                 'category_id' => 1
                 
             ],
+
             [
                 'title' => 'Second test article',
                 'content' => 'This is test content for article two.', 
