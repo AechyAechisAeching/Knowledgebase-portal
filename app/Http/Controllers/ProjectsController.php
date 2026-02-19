@@ -3,9 +3,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProjectsController extends Controller
 {
+    use AuthorizesRequests;
 
 public function index() {
     return 
@@ -17,14 +19,15 @@ public function index() {
             'description' => 'required',
             'category_id' => 'required|exists:categories,id'
         ]);
+        $data['user_id'] = auth()->id();
         $project = Project::create($data);
 
         return response()->json($project, 201);
     }
 
     public function show (Project $project) {
-    return
-    $project->load('category');
+    $this->authorize('view', $project);
+    return response()->json($project->load('category'));
     }
 
     public function update(Request $request, Project $project) {
@@ -33,18 +36,18 @@ public function index() {
             'description' => 'sometimes|required',
             'category_id' => 'sometimes|required|exists|categories,id'
         ]);
-            $project->update($data);
-            return $project;
+        $this->authorize('update', $project);
+
+        $project->update($data);
+        return response()->json($project);
         }
 
         public function destroy(Project $project) {
+            $this->authorize('delete', $project);
             $project->delete();
             return response()->json([
-                'message' => 'deleted'
+            'deleted' => true
             ]);
         }
 
 }
-
-// store request
-// project = project create make a request validate and add projectname and description as required

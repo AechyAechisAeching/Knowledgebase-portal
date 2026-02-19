@@ -40,7 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //  Endpoint voor Projecten
     Route::post('/projects', [ProjectsController::class, 'store']);
-
+    Route::get('/projects/{project}', [ProjectsController::class, 'show']);
+    Route::apiResource('projects',ProjectsController::class);
 
     Route::apiResource(
         'categories',

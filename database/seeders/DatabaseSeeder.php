@@ -1,35 +1,38 @@
 <?php
 namespace Database\Seeders;
 
-use Carbon\Traits\Timestamp;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Project;
 class DatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeders. 
      */
     public function run(): void
-    {
-        DB::table('users')->insert([
-            'name' => 'Vincent Bakker',
-            'email' => 'test@gmail.com',
-            'password' => Hash::make('password'),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
+    { 
+        
         /** 
          * Run the database factories
         */
-
+        /* ------------------------------------ */
+    
         User::factory()
         ->count(10)
         ->create();
 
-        /* ------------------------------------ */
+        
+
+        DB::table('users')->insert([
+            'name' => 'Admin',
+            'role' => 'admin',
+            'email' => 'Admin@gmail.com',
+            'password' => Hash::make('Admin@password'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         DB::table('categories')->insert([
             'name' => 'Tech',
@@ -37,14 +40,21 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+        Project::factory()
+        ->count(5)
+        ->create();
+
 
         DB::table('projects')-> insert([
             'projectname' => 'api laravel',
             'description' => 'api for app',
+            'user_id' => 1,
             'category_id' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        
+
         
          DB::table('tags')->insert([
             [

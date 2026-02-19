@@ -15,18 +15,23 @@ class Register extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'phone_number' => 'nullable|string',
+            'company' => 'nullable',
+            'address' => 'nullable',
             'password' => 'required|confirmed|min:8',
+            
         ]);
-
+        
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'phone_number' => $data['phone_number'],
+            'company' => $data['company'],
+            'address' => $data['address'],
         ]);
 
         Auth::login($user);
-
-        // return redirect('/')->with('success', 'Account created.');
     }
     
 }

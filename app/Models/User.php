@@ -11,7 +11,6 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Auth;
 
 
-$user = Auth::user();
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
@@ -23,13 +22,17 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
+
+    public function isAdmin() {
+        return $this->role === 'admin';
+    }    protected $fillable = [
         'name',
         'email',
         'address',
         'company',
         'password',
-        'phone_number'
+        'phone_number',
+        'role'
     ];
 
     
