@@ -27,9 +27,9 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string',
             'email' => 'required|email',
             'password' => 'required',
-            'phone_number' => 'nullable',
-            'company' => 'nullable',
-            'address' => 'nullable', 
+            'phone_number' => 'nullable|string',
+            'company' => 'nullable|string',
+            'address' => 'nullable|string', 
         ];
 }
         public function messages(): array
@@ -38,9 +38,9 @@ class RegisterRequest extends FormRequest
                 'name.required'=> 'Het invullen van je naam is verplicht.',
                 'email.required'=> 'Je email invullen is verplicht',
                 'password'=> 'Vul een wachtwoord in!',
-                'phone_number' => 'optioneel',
-                'company' => 'Bedrijf',
-                'address' => 'optioneel'
+                'phone_number.required' => 'optioneel',
+                'company.required' => 'Bedrijf',
+                'address.required' => 'optioneel'
                 ];
         }
     

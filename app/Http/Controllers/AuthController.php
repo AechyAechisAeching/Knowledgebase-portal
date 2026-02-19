@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+use AddressInfo;
 use App\Models\User;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LogoutRequest;
 use Hash;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
@@ -18,16 +18,21 @@ class AuthController extends Controller
         'name' => 'required|string',
         'email' => 'required|email|unique:users',
         'password'=> 'required',
+        'address' => 'nullable|string',
+        'company' => 'nullable',
+        'phone_number' => 'nullable|string|max:15',
         ]);
 
         $user = User::create([
             'name'=> $validated['name'],
             'email'=> $validated['email'],
             'password'=> Hash::make($validated['password']),
+            'address' => $validated['address'],
+            'company' => $validated['company'],
+            'phone_number' => $validated['phone_number']
         ]);
 
         $token = $user->createToken('api-token')->plainTextToken;
-        
         return response()->json([
             'message' => 'User Registered',
             'token'=> $token,

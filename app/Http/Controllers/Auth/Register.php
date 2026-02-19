@@ -15,9 +15,9 @@ class Register extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone_number' => 'nullable|string',
-            'company' => 'nullable',
-            'address' => 'nullable',
+            'phone_number' => 'nullable|string|max:15',
+            'company' => 'nullable|string',
+            'address' => 'nullable|string',
             'password' => 'required|confirmed|min:8',
             
         ]);

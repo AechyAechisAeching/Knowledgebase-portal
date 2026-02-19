@@ -29,6 +29,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'role' => 'admin',
             'email' => 'Admin@gmail.com',
+            'address' => 'Kyano',
+            'company' => 'Kyano',
+            'phone_number' => '053853833',
             'password' => Hash::make('Admin@password'),
             'created_at' => now(),
             'updated_at' => now(),
@@ -40,6 +43,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+        
         Project::factory()
         ->count(5)
         ->create();
