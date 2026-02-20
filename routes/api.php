@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\ProjectsController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Resetpasswordcontroller;
@@ -33,11 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // ! Project & Articles
 
     // Attachments: article_id, mime, original_name, size, path
-    /**
-     * Store an attachment for an article
-     */
-    // Route::apiResource('attachments', ArticleController::class);
-
+    
     //  Endpoint voor Projecten
     Route::post('/projects', [ProjectsController::class, 'store']);
     Route::get('/projects/{project}', [ProjectsController::class, 'show']);
@@ -52,6 +49,17 @@ Route::middleware('auth:sanctum')->group(function () {
         ArticleController::class
     );
     });
+    /**
+     * Store an attachment for an article
+     */
     Route::post('/articles/attachment', [ArticleController::class, 'storeAttachment']);
 
-   
+    Route::middleware(['auth:sanctum', 'checkrole:admin'])->prefix('admin')->group(function() {
+        //  Protected routes
+    Route::get('/test', function() {
+        return response()->json(['message' => 'admin.']);
+    });
+
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+
+    });
