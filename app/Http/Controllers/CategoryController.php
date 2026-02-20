@@ -10,16 +10,19 @@ class CategoryController extends Controller
     return
     Category::withCount('articles')->get();
   }
+
   public function store(Request $request)
   {
     $data = $request->validate([
       'name' => 'required',
-      'slug' => 'required|unique:categories,slug,'
+      'slug' => 'unique:categories,slug'
     ]);
 
       $category = Category::create($data);
 
+      // dd($data);
       return response()->json($category, 201);
+      
     }
 
   public function show(Category $category) {
@@ -30,12 +33,14 @@ class CategoryController extends Controller
   {
     $data = $request->validate([
       'name' => 'sometimes|required',
-      'slug' => 'sometimes|required|unique|categories,slug,'
-      . $category->id
+      'slug' => 'sometimes|unique:categories,slug,'
+      . $category->id,
     ]);
+
     $category->update($data);
     return $category;
   }
+  
   public function destroy(Category $category) {
     $category->delete();
     return response()->json([

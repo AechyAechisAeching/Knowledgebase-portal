@@ -34,7 +34,7 @@ public function index() {
         $data =$request->validate([
             'projectname' => 'sometimes|required',
             'description' => 'sometimes|required',
-            'category_id' => 'sometimes|required|exists|categories,id'
+            'category_id' => 'sometimes|required|exists:categories,id'
         ]);
         $this->authorize('update', $project);
 
