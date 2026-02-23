@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Resetpasswordcontroller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Models\User;
+use App\Http\Controllers\UserController;
+use App\Policies\UserPolicy;
 
 // Login endpoint om te kunnen inloggen met een bestaand account
 Route::post('/login', [AuthController::class,"login"])->name('login');
@@ -27,43 +30,59 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-
-    Route::middleware('auth:sanctum')->get('/users', 
-    function (Request $request) {
-        return $request->user();
-    });
+   
 
     // Logout endpoint voor het uitloggen van een ingelogde gebruiker
     Route::middleware('auth:sanctum')->post
     ('/logout', [AuthController::class, 'logout']);
 
-    // ! Project & Articles
+    // Project & Articles
 
-    // Attachments: article_id, mime, original_name, size, path
-    
-    //  Endpoint voor Projecten
+    //  Endpoint voor Projecten & Articles
+    Route::post('/articles', [ArticleController::class, 'store']);
+    Route::get('/articles/{article}', [ArticleController::class, 'show']);
+
     Route::post('/projects', [ProjectsController::class, 'store']);
     Route::get('/projects/{project}', [ProjectsController::class, 'show']);
-    Route::apiResource('projects',ProjectsController::class);
+    
 
-    Route::apiResource(
-        'categories',
-        CategoryController::class
-    );
-    Route::apiResource(
-        'articles',
-        ArticleController::class
-    );
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('articles', ArticleController::class);
+    Route::apiResource('projects', ProjectsController::class);
     });
     /**
      * Store an attachment for an article
      */
+
+    // Attachments: article_id, mime, original_name, size, path
     Route::post('/articles/attachment', [ArticleController::class, 'storeAttachment']);
 
     Route::middleware(['auth:sanctum', 'checkrole:admin'])->prefix('admin')->group(function() {
         //  Protected routes
     Route::get('/test', function() {
         return response()->json(['message' => 'admin.']);
+    });
+
+
+     Route::middleware('auth:sanctum')->get('/users/{id}', function ($id) {
+        $user = User::findOrFail($id);
+        return response()->json($user);
+    });
+
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    Route::middleware('auth:sanctum')->post('/users', function (Request $request) {
+            $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'address' => $request->address,
+            'company' => $request->company,
+            'phone_number' => $request->phone_number,
+            'email_verified_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+            ]);
+            return response()->json(['message' => $user, 201]);
     });
 
     Route::get('/dashboard', [DashboardController::class, 'index']);

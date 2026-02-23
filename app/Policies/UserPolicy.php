@@ -9,8 +9,8 @@ class UserPolicy
     /**
      * Create a new policy instance.
      */
-    public function __construct()
+    public function delete(User $user, User $model)
     {
-        //
+        return true;
     }
 }

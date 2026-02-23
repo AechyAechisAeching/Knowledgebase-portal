@@ -44,7 +44,7 @@ class ProjectsController extends Controller
             'projectname' => 'sometimes|required',
             'description' => 'sometimes|required',
             'slug' => ['sometimes','required',
-                Rule::unique('projects', 'slug')->ignore($project->id),
+            Rule::unique('projects', 'slug')->ignore($project->id),
             ],
             'category_id'  => 'sometimes|required|exists:categories,id',
         ]);
