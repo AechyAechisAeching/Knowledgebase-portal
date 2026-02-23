@@ -84,7 +84,28 @@ Route::middleware('auth:sanctum')->group(function () {
             ]);
             return response()->json(['message' => $user, 201]);
     });
+    Route::match(['put', 'patch'], '/users/{id}', function (Request $request, $id) {
+        $user = User::findOrFail($id);
+        
+        $user->update($request->only([
+            'name',
+            'email',
+            'password',
+            'address',
+            'company',
+            'phone_number',
+            'email_verified_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]));
 
+        return response()->json($user);
+
+    });
+
+
+
+    
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
     });
