@@ -6,14 +6,19 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Attachment;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Validation\Rule;
 class ArticleController extends Controller
 {
+
+    use AuthorizesRequests;
     public function index() {
         return
         Article::with('category')->get();
     }
 
-    public function store(Request $request) {
+    public function store(Request $request, Article $article)     {
+        $this->authorize('store', $article);
         $data = $request->validate([
             'title' => 'required',
             'content' => 'required',
@@ -26,8 +31,7 @@ class ArticleController extends Controller
     }
 
     public function storeAttachment(Request $request): JsonResponse
-    {
-        
+    {   
         $data = $request->validate([
             'file' => 'required',
             'article_id' => 'required|exists:articles,id'
@@ -51,11 +55,13 @@ class ArticleController extends Controller
     }
 
     public function show(Article $article) {
-        
-        $article->load('category');
+        $this->authorize('view', $article);   
+        return response()->json($article->load('category'));
     }
 
     public function update(Request $request, Article $article) {
+
+        $this->authorize('update', $article);
         $data = $request->validate([
             'title' => 'sometimes|required',
             'content' => 'sometimes|required',
@@ -64,16 +70,15 @@ class ArticleController extends Controller
             'status' => 'sometimes|required',
             'category_id' => 'sometimes|required|exists:categories,id'
         ]);
+        
         $article->update($data);
         return $article;
     }
 
     public function destroy(Article $article) {
+        $this->authorize('deleted', $article);
         $article->delete();
-        return response()->json([
-            'message' => 'Deleted'
-        ]);
-
+        return response()->json(['deleted' => true]);
         }
 }
 

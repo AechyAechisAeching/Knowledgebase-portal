@@ -27,6 +27,12 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+
+    Route::middleware('auth:sanctum')->get('/users', 
+    function (Request $request) {
+        return $request->user();
+    });
+
     // Logout endpoint voor het uitloggen van een ingelogde gebruiker
     Route::middleware('auth:sanctum')->post
     ('/logout', [AuthController::class, 'logout']);

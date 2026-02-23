@@ -48,11 +48,11 @@ class DatabaseSeeder extends Seeder
         ->count(5)
         ->create();
 
-
         DB::table('projects')-> insert([
             'projectname' => 'api laravel',
             'description' => 'api for app',
             'user_id' => 1,
+            'slug' => 'api-laravel',
             'category_id' => 1,
             'created_at' => now(),
             'updated_at' => now(),

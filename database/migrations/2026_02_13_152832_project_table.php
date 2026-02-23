@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('projectname');
             $table->string('description');
+            $table->string('slug');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->softDeletes();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();

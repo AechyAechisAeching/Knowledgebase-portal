@@ -18,7 +18,6 @@ class CheckRole
         /*
         1. If user request doesnt match required parameter role return
         2. Role isn't admin? response forbidden (403)
-        3.
         */
 
         if ($request->user()->role !== $role)
