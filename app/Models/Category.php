@@ -12,9 +12,9 @@ protected $fillable = [
         'name',
         'slug'
     ];
-    public function articles()
+    public function projects()
     {
-        return $this->hasMany(Article::class);
+        return $this->hasMany(Project::class);
     }
 
 

@@ -11,7 +11,7 @@ class CategoryController extends Controller
 use AuthorizesRequests;
   public function index() {
     return
-    Category::withCount('articles')->get();
+    Category::withCount('projects')->get();
   }
   public function store(Request $request)
   {
@@ -29,7 +29,7 @@ use AuthorizesRequests;
 
   public function show(Category $category) {
   $this->authorize('view', $category);  
-  return $category->load('articles');
+  return $category->load('projects');
   }
 
   public function update(Request $request, Category $category)
@@ -55,7 +55,7 @@ use AuthorizesRequests;
   }
 
   public function AdminIndex() {
-    return Category::withCount('articles')->get();
+    return Category::withCount('projects')->get();
     }
 
 }

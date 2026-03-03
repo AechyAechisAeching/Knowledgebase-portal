@@ -3,7 +3,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Mail\Attachment;
+use App\Models\Attachment;
 class Article extends Model
 {
 
@@ -18,8 +18,9 @@ class Article extends Model
         'content',
         'summary',
         'status',
+        'project_id',
+        'category_id',
         'visibility',
-        'category_id'
     ];
 
     protected $casts = [
@@ -32,13 +33,28 @@ class Article extends Model
         $this->hasMany(Attachment::class);
         
     }
+
+    public function article() {
+        return $this->hasMany(Article::class);
+    }
+    public function project()
+{
+    return $this->belongsTo(Project::class);
+}
+public function category()
+{
+    return $this->belongsTo(Category::class);
+}
     public function tags() {
 
        return $this->belongsToMany(Tag::class);
     }
 
-        public function category() {
-         return $this->belongsTo(Category::class);
-        
+    public function scopeVisibleTo($query, $user = null) {
+    if ($user && in_array($user->role, ['admin'])) {
+        return $query;
+    }
+    return $query->where('visibility', 'public')->where('status', 'published');
+    
     }
 }

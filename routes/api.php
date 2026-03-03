@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\ForgetpasswordController;
 use App\Http\Controllers\ProjectsController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Resetpasswordcontroller;
@@ -19,6 +20,8 @@ Route::post('/register', [AuthController::class,"register"])->name('register');
 // Wachtwoord reset endpoint voor het resetten van een wachtwoord met een token
 Route::post('/password/request', [Resetpasswordcontroller::class,'request']);
 Route::post('/password/reset', [Resetpasswordcontroller::class,'reset']);
+Route::post('/password/forget', [ForgetpasswordController::class, 'forget']);
+Route::post('/password/forget', [ForgetpasswordController::class, 'request']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // /me endpoint voor het ophalen van de huidige ingelogde gebruiker
@@ -27,21 +30,21 @@ Route::middleware('auth:sanctum')->group(function () {
     // Project & Articles
 
     //  Endpoint voor Projecten & Articles
-    
-    Route::get('/projects', [ProjectsController::class, 'myProjects']);
+    Route::get('/projects', [ProjectsController::class, 'index']);
+    Route::get('projects', [ProjectsController::class, 'myProjects']);
+    Route::get('/projects/{project}/articles', [ArticleController::class, 'projectArticles']);
     Route::apiResource('projects', ProjectsController::class)->except(['index']);
     
-
     Route::get('/articles', [ArticleController::class, 'index']);
     Route::get('/articles/{article}', [ArticleController::class, 'show']);
 
-
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{category}', [CategoryController::class, 'show']);
-    });
-    // Attachments: article_id, mime, original_name, size, path
-    Route::post('/articles/attachment', [ArticleController::class, 'storeAttachment']);
     
+        // Attachments: article_id, mime, original_name, size, path
+    Route::post('/articles/attachment', [ArticleController::class, 'storeAttachment']);
+
+    });
 
     Route::middleware(['auth:sanctum', 'checkrole:admin'])->prefix('admin')->group(function() {
         //  Protected routes
@@ -55,17 +58,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
          // Projects CRUD
 
-         // ! TODO: REMEMBER REMOVING SHOW ---------------------------->
          Route::get('/projects', [ProjectsController::class, 'AdminIndex']);
          Route::get('/projects/{project}', [ProjectsController::class, 'show']);
          Route::post('/projects', [ProjectsController::class, 'store']);
-         Route::get('projects/me', [ProjectsController::class, 'myProjects']); 
+         Route::get('projects', [ProjectsController::class, 'myProjects']); 
          Route::put('/projects/{project}', [ProjectsController::class, 'update']);
          Route::delete('/projects/{project}', [ProjectsController::class, 'destroy']);
 
          // Categories CRUD
 
-         // ! UNCOMMENT
          Route::get('/categories', [CategoryController::class, 'AdminIndex']);
          Route::get('/categories/{category}', [CategoryController::class, 'show']);
          Route::post('/categories', [CategoryController::class, 'store']);
@@ -81,8 +82,8 @@ Route::middleware('auth:sanctum')->group(function () {
          
 
          // Admin User CRUD
-        Route::get('/users/{id}', fn($id) => response()->json(User::findOrFail($id)));
-        Route::post('/users', [UserController::class, 'store']);
-        Route::put('/users/{id}', [UserController::class, 'update']);
-        Route::delete('/users/{id}', [UserController::class, 'destroy']);
+         Route::get('/users/{id}', fn($id) => response()->json(User::findOrFail($id)));
+         Route::post('/users', [UserController::class, 'store']);
+         Route::put('/users/{id}', [UserController::class, 'update']);
+         Route::delete('/users/{id}', [UserController::class, 'destroy']);
     });

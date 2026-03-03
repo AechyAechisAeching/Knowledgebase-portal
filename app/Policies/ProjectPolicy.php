@@ -6,30 +6,33 @@ use App\Models\Project;
 
 class ProjectPolicy
 {
-    /**
-     * Create a new policy instance.
-     */
 
-    public function before(User $user) {
-    if ($user->isAdmin()) {
-        return true;
-    }
-    return null;
+
+    //public function viewAny(User $user, Project $project) {
+  //      return $user->$user->role === 'admin' || $project->user_id === $user->id;
+//    }
+
+    // public function viewAny(User $user, Project $project)
+    // {
+    //       return in_array($user->role, ['admin']) || $project->user_id === $user->id;
+    // }
+
+public function view($user)
+{
+    return true;
+}
+public function create($user)
+{
+    return true;
 }
 
-public function view(User $user, Project $project) {
-    // return $project->user_id === $user->id || $user->isAdmin;
+public function update($user)
+{
     return true;
-    }
+}
 
-public function update(User $user, Project $project) {
-    // return $project->user_id === $user->id || $user->isAdmin;
+public function delete($user)
+{
     return true;
-    }
-
-public function delete(User $user, Project $project) {
-    // return $project->user_id === $user->id || $user->isAdmin;
-    return true;
-    }
-
+}
 }

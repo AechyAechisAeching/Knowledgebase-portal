@@ -6,27 +6,29 @@ use App\Models\Category;
 
 class CategoryPolicy
 {
-    /**
-     * Create a new policy instance.
-     */
-
-    public function before(User $user) {
-    if ($user->isAdmin()) {
-        return true;
-    }
-    return null;
-}
-
-public function view(User $user, Category $category) {
+public function viewAny($user)
+{
     return true;
 }
 
-public function update(User $user, Category $category) {
+public function view($user, Category $category)
+{
     return true;
 }
 
-public function delete(User $user, Category $category) {
-    return true;
+public function create($user)
+{
+    return $user->admin;
+}
+
+public function update($user, Category $category)
+{
+    return $user->admin;
+}
+
+public function delete($user, Category $category)
+{
+    return $user->admin;
 }
 
 }

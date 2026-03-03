@@ -34,7 +34,9 @@ class User extends Authenticatable
         'role'
     ];
 
-    
+    protected $casts = [
+        'admin' => 'enum',
+    ];
     /**
      * The attributes that should be hidden for serialization.
      *

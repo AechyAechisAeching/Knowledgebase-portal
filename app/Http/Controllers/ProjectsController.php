@@ -12,7 +12,7 @@ class ProjectsController extends Controller
 
     public function index()
     {
-        return Project::with('category')->get();
+        return Project::with(['category', 'article'])->get();
     }
     // Create
 
@@ -20,10 +20,11 @@ class ProjectsController extends Controller
         public function store(Request $request)
     {
         $data = $request->validate([
-            'projectname' => 'required',
-            'description' => 'required',
+            'projectname' => 'required|string',
+            'description' => 'required|string',
             'slug' => 'unique:projects,slug',
             'category_id' => 'required|exists:categories,id',
+            
         ]);
 
         $data['user_id'] = auth()->id();
@@ -32,12 +33,10 @@ class ProjectsController extends Controller
         return response()->json($project, 201);
     }
     // Read
-
-    
      public function show(Project $project)
      {
          $this->authorize('view', $project);
-         return response()->json($project->load('category'));
+         return $project->load(['category', 'article']);
     }
 
     // Update
@@ -46,8 +45,8 @@ class ProjectsController extends Controller
         $this->authorize('update', $project);
 
         $data = $request->validate([
-            'projectname' => 'sometimes|required',
-            'description' => 'sometimes|required',
+            'projectname' => 'sometimes|required|string',
+            'description' => 'sometimes|required|string',
             'slug' => ['sometimes','required',
             Rule::unique('projects', 'slug')->ignore($project->id),
             ],
@@ -71,7 +70,7 @@ class ProjectsController extends Controller
         // $this->authorize('admin');
         // $request->validate((['user_id' => 'required|exists:user,id'
         // ]));
-        $query = Project::with('category');
+        $query = Project::with(['category', 'article']);
         if ($request->user_id) {
         $query->where('user_id', $request->user_id);
          };
@@ -83,7 +82,7 @@ class ProjectsController extends Controller
         // 1. Projects with relationship category
         // 2. in column user_id authenticate the user id (token)
         // 3. Execute query as selected id
-        return Project::with('category')->where('user_id', auth()->id())
+        return Project::with(['category', 'article'])->where('user_id', auth()->id())
         ->get();
     }
 }

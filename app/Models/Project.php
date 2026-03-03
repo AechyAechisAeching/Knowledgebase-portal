@@ -17,14 +17,18 @@ use HasFactory, SoftDeletes;
         'user_id',
         'category_id'
     ];
-
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
+public function users()
+{
+    return $this->belongsTo(User::class);
+}
     public function category() {
         return
         $this->belongsTo(Category::class);
     }
+    public function article()
+{
+    return $this->hasMany(Article::class);
+}
 
         protected static function boot()
 {

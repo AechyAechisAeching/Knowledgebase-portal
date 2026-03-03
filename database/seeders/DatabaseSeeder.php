@@ -51,12 +51,22 @@ class DatabaseSeeder extends Seeder
         DB::table('projects')-> insert([
             'projectname' => 'api laravel',
             'description' => 'api for app',
-            'user_id' => 1,
+            'user_id' => 11,
             'slug' => 'api-laravel',
             'category_id' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        // DB::table('attachments')->insert([
+        //     'article_id' => 1,
+        //     'original_name' => 'Attachment',
+        //     'path' => '/application/img',
+        //     'mime' => 'jpg',
+        //     'size' => 24,
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        //     ]);
         
 
         
@@ -83,8 +93,9 @@ class DatabaseSeeder extends Seeder
                 'summary' => 'Project summary in short',
                 'created_at' => now(),
                 'updated_at' => now(),
-                'status' => 'withdrawn',
+                'status' => 'archived',
                 'visibility' => 'private',
+                'project_id' => 3,
                 'category_id' => 1
                 
             ],
@@ -97,6 +108,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
                 'status' => 'published',
                 'visibility' => 'public',
+                'project_id' => 2,
                 'category_id' => 1
             ],
         ]);

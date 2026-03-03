@@ -3,33 +3,41 @@
 namespace App\Policies;
 use App\Models\User;
 use App\Models\Article;
+use App\Models\Project;
 
 class ArticlePolicy
 {
-    /**
-     * Create a new policy instance.
-     */
 
-    public function before(User $user) {
-    if ($user->isAdmin()) {
-        return true;
-    }
-    return null;
+    //public function viewAny(User $user, Project $project)
+    //{
+    //  dd([
+    //     'user_id' => $user->id,
+    //     'user_admin' => $user->user_admin,
+    //     'project_user_id' => $project->user_id,
+    //     'match' => $project->user_id === $user->id,
+    // ]);
+    //  return in_array($user->role, ['admin']) || $project->user_id === $user->id;
+    //}
+
+public function view($user)
+{
+    
+return true;
+
 }
 
-public function view(User $user, Article $article) {
-    // return $article->user_id === $user->id || $user->isAdmin;
+public function create($user)
+{
     return true;
 }
 
-public function update(User $user, Article $article) {    
-// return $article->user_id === $user->id || $user->isAdmin;
+public function update($user, Article $article)
+{
     return true;
 }
 
-public function delete(User $user, Article $article) {    
-// return $article->user_id === $user->id || $user->isAdmin;
+public function delete($user, Article $article)
+{
     return true;
 }
-
 }

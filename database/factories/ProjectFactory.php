@@ -7,7 +7,6 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\Category;
-
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Project>
  */
