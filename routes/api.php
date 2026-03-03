@@ -3,10 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\ForgetpasswordController;
 use App\Http\Controllers\ProjectsController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Resetpasswordcontroller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Models\User;
@@ -17,11 +15,10 @@ Route::post('/login', [AuthController::class,"login"])->name('login');
 // Register endpoint voor het registreren van een nieuw account
 Route::post('/register', [AuthController::class,"register"])->name('register');
 // Password request endpoint voor het aanvragen van een wachtwoord reset
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 // Wachtwoord reset endpoint voor het resetten van een wachtwoord met een token
-Route::post('/password/request', [Resetpasswordcontroller::class,'request']);
-Route::post('/password/reset', [Resetpasswordcontroller::class,'reset']);
-Route::post('/password/forget', [ForgetpasswordController::class, 'forget']);
-Route::post('/password/forget', [ForgetpasswordController::class, 'request']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // /me endpoint voor het ophalen van de huidige ingelogde gebruiker

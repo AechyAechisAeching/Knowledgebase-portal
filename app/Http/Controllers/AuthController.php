@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-use AddressInfo;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LogoutRequest;
-use Hash;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\OtpMail;
+
 class AuthController extends Controller
 {
 
@@ -80,4 +84,59 @@ if (! $user) {
         ],200);
 }
 
+    public function forgotPassword(Request $request) {
+        $request->validate(['email' => 'required|email|exists:users,email']);
+        $otp = rand(100000, 999999);
+        $user = User::where('email', $request->email)->first();
+        $user->update([
+            'otp' => $otp,
+            'otp_expires_at' => Carbon::now()->addMinutes(10),
+        ]);
+
+        Mail::to($user->email)->send(new OtpMail($otp));
+
+        return response()->json(['message' => 'Code has been sent to your inbox.']);
     }
+
+     public function verifyOtp(Request $request) {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)
+        ->where('otp', $request->otp)
+        ->where('otp_expires_at', '>=', Carbon::now())
+        ->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'invalid code or expired.'], 422);
+        }
+
+        return response()->json(['message' => 'Password Verified.']);
+        
+        }
+        public function resetPassword(Request $request) {
+            $request->validate([
+                'email' => 'required|email',
+                'otp' => 'required',
+                'password' => 'required|confirmed|min:8',
+            ]);
+        
+            $user = User::where('email', $request->email)
+            ->where('otp', $request->otp)
+            ->where('otp_expires_at', '>=', Carbon::now())->first();
+            
+
+            if (!$user) {
+                return response()->json(['message' => 'Invalid code or expired.'], 422);
+            }
+
+            $user->update([
+                'password' => Hash::make($request->password),
+                'otp' => null,
+                'otp_expires_at' => null,
+            ]);
+            return response()->json(['message' => 'Password has been resetted.' ]);
+        }
+}
