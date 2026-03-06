@@ -12,9 +12,9 @@ class OtpMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public int $otp;
+    public $otp;
 
-    public function __construct(int $otp)
+    public function __construct($otp)
     {
         $this->otp = $otp;
     }
@@ -22,7 +22,7 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Jouw wachtwoord reset code is: {$this->otp}"
+            subject: "Wijzig je wachtwoord voor je account"
         );
     }
 
@@ -156,13 +156,13 @@ class OtpMail extends Mailable
         <div class='wrapper'>
             <div class='header'>
                 <span class='header-dot'></span>
-                <span class='header-title'>Wachtwoord Reset</span>
+                <span class='header-title'>Bevestigings code</span>
             </div>
             <div class='card'>
                 <p class='eyebrow'>Beveiligingscode</p>
                 <h1>Bevestig jouw <br> e-mailadres</h1>
                 <p class='body-text'>
-                    Gebruik de onderstaande code om jouw wachtwoord te resetten.
+                    Gebruik de onderstaande code om jouw wachtwoord te veranderen.
                     Voer de code in op de pagina waar je hierom werd gevraagd.
                 </p>
                 <div class='divider'></div>

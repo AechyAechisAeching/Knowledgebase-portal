@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\ForgotMail;
 use App\Mail\ResetMail;
 use App\Models\password_reset_tokens;
 use Illuminate\Support\Facades\Mail;
@@ -78,10 +79,40 @@ class AuthController extends Controller
         ],200);
 }
 
+    /* ---------------------------------------------------------------------------------------------------
+        ? PASSWORD RESET
+    */
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['message' => 'Current password is incorrect.'], 422);
+        }
+
+        $user->update(['password' => Hash::make($request->password)]);
+        // Email
+        Mail::to($user->email)->send(new ResetMail());
+
+        return response()->json(['message' => 'Password has been reset.']);
+    }
+
+    /* --------------------------------------------------------------------------------------------------- 
+        ? PASSWORD FORGET
+    */
     public function forgotPassword(Request $request) {
         $request->validate(['email' => 'required|email|exists:users,email']);
-        $otp = rand(100000, 999999);
+        
+        $pool = '1234567890QWERTYUIOPASDFGHJKLZXCVBNM';
+        $otp = substr(str_shuffle($pool), 0, 6);
         $user = User::where('email', $request->email)->first();
+
         DB::table('password_reset_tokens')->updateOrInsert(
             ['user_id' => $user->id],
             [
@@ -95,7 +126,7 @@ class AuthController extends Controller
         return response()->json(['message' => 'A verification code has been sent to your inbox.']);
         }
 
-   public function verifyOtp(Request $request) {
+     public function verifyOtp(Request $request) {
         $request->validate([
             'email' => 'required|email',
             'otp' => 'required',
@@ -118,7 +149,7 @@ class AuthController extends Controller
         }
         return response()->json(['message' => 'Code Verified.']);
         }
-        public function resetPassword(Request $request) {
+        public function newPassword(Request $request) {
         $request->validate([
         'email' => 'required|email|exists:users,email',
         'otp' => 'required',
@@ -143,7 +174,7 @@ class AuthController extends Controller
 
         $user->update(['password' => Hash::make($request->password)]);
         DB::table('password_reset_tokens')->where('user_id')->delete();
-        Mail::to($user->email)->send(new ResetMail());  
+        Mail::to($user->email)->send(new ForgotMail());  
         return response()->json(['message' => 'Password has been resetted.']);
            
         }

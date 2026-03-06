@@ -15,15 +15,20 @@ Route::post('/login', [AuthController::class,"login"])->name('login');
 // Register endpoint voor het registreren van een nieuw account
 Route::post('/register', [AuthController::class,"register"])->name('register');
 // Password request endpoint voor het aanvragen van een wachtwoord reset
+
+
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 // Wachtwoord reset endpoint voor het resetten van een wachtwoord met een token
-Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/newPassword', [AuthController::class, 'newPassword']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     // /me endpoint voor het ophalen van de huidige ingelogde gebruiker
     Route::get('/me', fn (Request $request) => $request->user());
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
     // Project & Articles
 
     //  Endpoint voor Projecten & Articles
