@@ -20,7 +20,6 @@ class WorkspaceController extends Controller
 
         $workspace = Workspace::create([
             'name' => $request->name,
-            // 'slug' => 'unique:workspaces,slug',
             'slug' => Str::slug($request->name) . '-' . uniqid(),
             'owner_id' => auth()->id(),
         ]);
@@ -64,7 +63,7 @@ public function WorkspaceProjects(Workspace $workspace) {
         // - if User is authenticated to manage authorize workspace management
         $this->authorize('manage', $workspace);
 
-        if ($workspace->members()->where('user_id', $user->id)->exists()) {
+        if (!$workspace->members()->where('user_id', $user->id)->exists()) {
             return response()->json(
                 ['message' => 'Dit is al een gebruiker.'],
                 409,
