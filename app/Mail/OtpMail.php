@@ -22,7 +22,7 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Wijzig je wachtwoord voor je account"
+            subject: "Wachtwoord wijzigen"
         );
     }
 

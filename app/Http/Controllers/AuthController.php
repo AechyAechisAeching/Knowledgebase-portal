@@ -42,7 +42,6 @@ class AuthController extends Controller
 {
     $validated = $request->validated();
     
-    // Extract only email and password for authentication
     $credentials = [
         'email' => $validated['email'],
         'password' => $validated['password'],

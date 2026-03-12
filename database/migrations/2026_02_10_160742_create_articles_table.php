@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('visibility', ['public', 'private'])->default('public');
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('workspace_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

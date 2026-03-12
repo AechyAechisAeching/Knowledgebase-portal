@@ -118,6 +118,16 @@ class ForgotMail extends Mailable
                 background: #f0ede8;
                 margin: 28px 0;
             }
+                  .notice {
+                background-color: #E1FFE1;
+                border-left: 3px solid #85E847;
+                border-radius: 0 8px 8px 0;
+                padding: 12px 16px;
+                margin-bottom: 28px;
+                font-size: 13px;
+                color: #327A2E;
+                line-height: 1.5;
+            }
             .otp-label {
                 font-size: 11px;
                 font-weight: 600;
@@ -162,6 +172,10 @@ class ForgotMail extends Mailable
                     Er is een wachtwoord wijziging plaats gevonden op jouw account.
                 </p>
                 <div class='divider'></div>
+                 <div class='notice'>
+                Wachtwoord wijziging geslaagd!. <br>
+                Uw wachtwoord is veranderd.
+                </div>
                 <div class='text'>
                     Heb jij dit niet aangevraagd?
                 </div>

@@ -3,41 +3,62 @@
 namespace App\Policies;
 use App\Models\User;
 use App\Models\Article;
-use App\Models\Project;
-
+use App\Models\Workspace;
 class ArticlePolicy
 {
 
-    //public function viewAny(User $user, Project $project)
-    //{
-    //  dd([
-    //     'user_id' => $user->id,
-    //     'user_admin' => $user->user_admin,
-    //     'project_user_id' => $project->user_id,
-    //     'match' => $project->user_id === $user->id,
-    // ]);
-    //  return in_array($user->role, ['admin']) || $project->user_id === $user->id;
-    //}
-
-public function view($user)
-{
+//     public function create(User $user)
+// {
+//     $workspaceId = request()->input('workspace_id');
     
-return true;
+//     \Log::info('ArticlePolicy@create', [
+//         'user_id' => $user->id,
+//         'workspace_id' => $workspaceId,
+//         'workspace_exists' => Workspace::find($workspaceId)?->id,
+//         'is_member' => Workspace::find($workspaceId)?->members()
+//             ->where('user_id', $user->id)->exists(),
+//     ]);
 
+//     if (!$workspaceId) return false;
+//     $workspace = Workspace::find($workspaceId);
+//     if (!$workspace) return false;
+//     return $workspace->members()->where('user_id', $user->id)->exists();
+// }
+
+public function before($user, $ability) {
+    if ($user->role === 'admin') {
+        return true;
+    }
 }
-
-public function create($user)
+public function create(User $user)
 {
-    return true;
+    $workspaceId = request()->input('workspace_id');
+    if (!$workspaceId) return false;
+
+    $workspace = Workspace::find($workspaceId);
+    if (!$workspace) return false;
+
+    return $workspace->members()->where('user_id', $user->id)->exists();
+}
+public function update(User $user, Article $article)
+{
+    $workspace = $article->workspace;
+    if (!$workspace) return false;
+
+    return $workspace->members()->where('user_id', $user->id)->exists();
+}
+public function delete(User $user, Article $article)
+{
+    $workspace = $article->workspace;
+    if (!$workspace) return false;
+    return
+    $workspace->members()->where('user_id', $user->id)->exists();
+}
+public function view(User $user, Article $article) {
+    $workspace = $article->workspace;
+    if (!$workspace) return false;
+
+    return $user->role === 'admin' || $workspace->members()->where('user_id', $user->id)->exists();
 }
 
-public function update($user, Article $article)
-{
-    return true;
-}
-
-public function delete($user, Article $article)
-{
-    return true;
-}
 }

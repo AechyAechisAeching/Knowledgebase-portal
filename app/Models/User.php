@@ -35,7 +35,12 @@ class User extends Authenticatable
         
     ];
 
-    protected $casts = [
+
+    public function workspaces() {
+    return $this->belongsToMany(Workspace::class, 'user_workspace')
+        ->withPivot('role')
+        ->withTimestamps();
+}    protected $casts = [
         'admin' => 'enum',
     ];
     /**
