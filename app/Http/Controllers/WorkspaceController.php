@@ -11,53 +11,50 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-
+use App\Http\Requests\WorkspaceRequest;
+use App\Http\Requests\WorkspaceUpdateRequest;
 class WorkspaceController extends Controller
 {
     use AuthorizesRequests;
 
-    public function store(Request $request)
+    public function store(WorkspaceRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-        ]);
+        $request->validated();
+     
 
         $workspace = Workspace::create([
-            'name'     => $request->name,
-            'slug'     => Str::slug($request->name) . '-' . uniqid(),
+            'name' => $request->name,
+            'slug' => Str::slug($request->name) . '-' . uniqid(),
             'owner_id' => auth()->id(),
         ]);
-
+ 
         $workspace->members()->attach(auth()->id(), ['role' => 'owner']);
-
         return response()->json($workspace, 201);
     }
-
-    public function show(Workspace $workspace)
+   public function show(Workspace $workspace)
     {
         $this->authorize('view', $workspace);
-
-        return $workspace->load(['articles', 'projects']);
+        return 
+        $workspace->load(['articles', 'projects']);
     }
 
-    public function update(Workspace $workspace, Request $request)
+    public function update(Workspace $workspace, WorkspaceUpdateRequest $request)
     {
         $this->authorize('update', $workspace);
+        $data = $request->validated();
 
-        $data = $request->validate([
-            'name' => 'sometimes|required|string',
-            'slug' => 'sometimes|unique:workspaces,slug,' . $workspace->id,
-        ]);
+        if (isset($data['name'])) {
+            $data['slug'] = Str::slug($data['name']) . '-' . uniqid();
+        }
 
         $workspace->update($data);
-
         return response()->json($workspace);
     }
 
     public function workspaceArticles(Workspace $workspace)
     {
         return $workspace->articles()->get();
-    }
+    } 
 
     public function workspaceProjects(Workspace $workspace)
     {
@@ -70,7 +67,7 @@ class WorkspaceController extends Controller
 
         $data = $request->validate([
             'email' => 'required|email',
-            'role'  => 'sometimes|in:member,admin',
+            'role' => 'sometimes|in:member,admin',
         ]);
 
         $user = User::where('email', $data['email'])->first();
@@ -87,10 +84,10 @@ class WorkspaceController extends Controller
 
         WorkspaceInvite::create([
             'workspace_id' => $workspace->id,
-            'email'        => $data['email'],
-            'token'        => $token,
-            'role'         => $data['role'] ?? 'member',
-            'expires_at'   => now()->addDays(7),
+            'email' => $data['email'],
+            'token' => $token,
+            'role' => $data['role'] ?? 'member',
+            'expires_at' => now()->addDays(7),
         ]);
 
         $acceptUrl = URL::temporarySignedRoute(

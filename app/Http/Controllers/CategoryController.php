@@ -38,15 +38,13 @@ public function update(Request $request, Category $category)
 
     $data = $request->validate([
         'name' => 'sometimes|required|string',
-        'slug' => [
-            'sometimes',
-            'required',
-            Rule::unique('categories', 'slug')->ignore($category->id),
+        'slug' => ['sometimes', 'required',
+        Rule::unique('categories', 'slug')->ignore($category->id),
         ],
     ]);
 
     $category->update($data);
-
+    
     return $category;
 }
   public function destroy(Category $category)

@@ -58,10 +58,8 @@ class ProjectsController extends Controller
     }
 
      public function myProjects() {
-        // 1. Projects with relationship category
-        // 2. in column user_id authenticate the user id (token)
-        // 3. Execute query as selected id
-        return Project::with(['category', 'article', 'workspace'])->where('user_id', auth()->id())
+        return
+        Project::with(['category', 'article', 'workspace'])->where('user_id', auth()->id())
         ->get();
     }
 }
