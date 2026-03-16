@@ -45,9 +45,8 @@ class ArticleController extends Controller
         return new JsonResponse($attachment);
     }
 
-    public function show(Article $article) {
-    // ! REMEMBER THIS   
-   $this->authorize('view', $article);
+    public function show(Article $article) { 
+    $this->authorize('view', $article);
     return $article->load(['project', 'category']);
     }
 

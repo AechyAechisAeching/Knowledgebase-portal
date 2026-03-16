@@ -15,12 +15,15 @@ class WorkspacePolicy
         
     // }
 
-   public function store($user, Workspace $workspace ) {
+   public function create(User $user ) {
         return true;
     }
-    public function show($user, Workspace $workspace) {
-        return 
-        true;
+    // public function show($user, Workspace $workspace) {
+    //     return true;
+    // }
+    // return $this->manage($user, $workspace);
+    public function view(User $user, Workspace $workspace) {
+        if ($workspace->owner_id === $user->id);
     }
 
     public function update($user, Workspace $workspace) {
@@ -29,12 +32,13 @@ class WorkspacePolicy
     }
 
     public function delete($user, Workspace $workspace) {
-        return true;
-    }
-    public function invite($user, Workspace $workspace) {
-        return true;
+        if ($workspace->owner_id === $user->id)
+             return true;
     }
 
+    public function invite($user, Workspace $workspace) {
+        return $this->manage($user, $workspace);
+    }
 
     public function manage(User $user, Workspace $workspace): bool
 {

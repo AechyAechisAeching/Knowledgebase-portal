@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Workspace;
+use App\Models\WorkspaceInvite;
+use App\Models\User;
+use App\Mail\InviteMail;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Mail;
-use App\Mail\InviteMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+
 class WorkspaceController extends Controller
 {
     use AuthorizesRequests;
+
     public function store(Request $request)
     {
         $request->validate([
@@ -19,79 +23,127 @@ class WorkspaceController extends Controller
         ]);
 
         $workspace = Workspace::create([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name) . '-' . uniqid(),
+            'name'     => $request->name,
+            'slug'     => Str::slug($request->name) . '-' . uniqid(),
             'owner_id' => auth()->id(),
         ]);
 
         $workspace->members()->attach(auth()->id(), ['role' => 'owner']);
+
         return response()->json($workspace, 201);
     }
 
-    public function show(Workspace $workspace) {
+    public function show(Workspace $workspace)
+    {
         $this->authorize('view', $workspace);
+
         return $workspace->load(['articles', 'projects']);
     }
 
-    public function update($user, Workspace $workspace, Request $request) {
+    public function update(Workspace $workspace, Request $request)
+    {
         $this->authorize('update', $workspace);
-        
+
         $data = $request->validate([
-            'name' => 'sometimes|required',
-            'slug' => 'sometimes|unique:workspaces,slug'
-            . $workspace->id,
+            'name' => 'sometimes|required|string',
+            'slug' => 'sometimes|unique:workspaces,slug,' . $workspace->id,
         ]);
 
         $workspace->update($data);
-        return $user->owner;
+
+        return response()->json($workspace);
     }
 
-
-    /* Projects & Articles workspace */
-
-   public function WorkspaceArticles(Workspace $workspace) {
-    return $workspace->articles()->get();
-}
-
-public function WorkspaceProjects(Workspace $workspace) {
-    return $workspace->projects()->get();
-}
-    // Inviting users by email feature
-
-    public function invite(Request $request, Workspace $workspace, User $user)
+    public function workspaceArticles(Workspace $workspace)
     {
-        // - if User is authenticated to manage authorize workspace management
+        return $workspace->articles()->get();
+    }
+
+    public function workspaceProjects(Workspace $workspace)
+    {
+        return $workspace->projects()->get();
+    }
+
+    public function invite(Request $request, Workspace $workspace)
+    {
         $this->authorize('manage', $workspace);
 
-        if (!$workspace->members()->where('user_id', $user->id)->exists()) {
-            return response()->json(
-                ['message' => 'Dit is al een gebruiker.'],
-                409,
-                );    
+        $data = $request->validate([
+            'email' => 'required|email',
+            'role'  => 'sometimes|in:member,admin',
+        ]);
+
+        $user = User::where('email', $data['email'])->first();
+
+        if ($user && $workspace->members()->where('user_id', $user->id)->exists()) {
+            return response()->json(['message' => 'Deze gebruiker is al lid.'], 409);
         }
-        
 
-        // DEBUG: Mailing doesn't
-        Mail::to($user->email)->send(new InviteMail());
-        
-        
-        $workspace->members()->attach($user->id, ['role' => $request->role ?? 'member']);
-            return response(['message' => 'Gebruiker is toegevoegd'], 200);       
-    } 
+        WorkspaceInvite::where('workspace_id', $workspace->id)
+            ->where('email', $data['email'])
+            ->delete();
 
-    public function removeMember(Workspace $workspace, User $user) {
+        $token = Str::random(64);
+
+        WorkspaceInvite::create([
+            'workspace_id' => $workspace->id,
+            'email'        => $data['email'],
+            'token'        => $token,
+            'role'         => $data['role'] ?? 'member',
+            'expires_at'   => now()->addDays(7),
+        ]);
+
+        $acceptUrl = URL::temporarySignedRoute(
+            'workspace.invite.accept',
+            now()->addDays(7),
+            ['token' => $token]
+        );
+
+        Mail::to($data['email'])->send(new InviteMail($workspace, $acceptUrl));
+        return 
+        response()->json(['message' => 'Uitnodiging verstuurd.'], 200);
+    }
+
+    public function acceptInvite(Request $request)
+    {
+        if (! $request->hasValidSignature()) {
+            return response()->json(['message' => 'Ongeldige of verlopen uitnodiging.'], 403);
+        }
+
+        $invite = WorkspaceInvite::where('token', $request->token)
+            ->where('expires_at', '>', now())
+            ->firstOrFail();
+
+        $user = User::where('email', $invite->email)->firstOrFail();
+        $workspace = Workspace::findOrFail($invite->workspace_id);
+
+        if (! $workspace->members()->where('user_id', $user->id)->exists()) {
+            $workspace->members()->attach($user->id, ['role' => $invite->role]);
+        }
+
+        $invite->delete();
+        return
+        response()->json(['message' => 'Je bent toegevoegd aan de workspace.'], 200);
+    }
+
+    public function removeMember(Workspace $workspace, User $user)
+    {
         $this->authorize('manage', $workspace);
         $workspace->members()->detach($user->id);
-        return response()->json(['message' => 'Gebruiker is verwijderd'], 200);
+        return 
+        response()->json(['message' => 'Gebruiker is verwijderd'], 200);
     }
 
-    public function destroy(Workspace $workspace) {
+    public function destroy(Workspace $workspace)
+    {
         $this->authorize('delete', $workspace);
-        $workspace->delete(); 
-        return response()->json(['message' => 'Jouw workspace is verwijderd.']);
+        $workspace->delete();
+        return
+        response()->json(['message' => 'Jouw workspace is verwijderd.']);
     }
-    
-    public function index() {
-            return auth()->user()->workspaces()->with('owner')->get();
-        }
+
+    public function index()
+    {
+        return auth()->user()->workspaces()->with('owner')->get();
+    }
 }

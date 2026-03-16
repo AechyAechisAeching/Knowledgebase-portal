@@ -40,7 +40,9 @@ class User extends Authenticatable
     return $this->belongsToMany(Workspace::class, 'user_workspace')
         ->withPivot('role')
         ->withTimestamps();
-}    protected $casts = [
+}
+
+protected $casts = [
         'admin' => 'enum',
     ];
     /**

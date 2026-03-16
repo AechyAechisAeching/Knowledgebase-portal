@@ -26,6 +26,8 @@ return new class extends Migration
             $table->enum('role', ['owner', 'admin', 'member'])->default('member');
             $table->timestamps();
         });    
+
+         
     }
 
     
@@ -37,5 +39,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('workspaces');
         Schema::dropIfExists('user_workspace');
+      
     }   
 };

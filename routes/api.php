@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/workspaces/{members}', [WorkspaceController::class, 'destroy']);
     Route::get('/workspaces/{workspace}/articles', [WorkspaceController::class, 'WorkspaceArticles']);    
     Route::get('/workspaces/{workspace}/projects', [WorkspaceController::class, 'WorkspaceProjects']);
+    Route::get('/workspace/invite/accept', [WorkspaceController::class, 'acceptInvite'])->name('workspace.invite.accept');
     Route::apiResource('projects', ProjectsController::class);
     Route::apiResource('articles', ArticleController::class);
     Route::apiResource('categories', CategoryController::class);
@@ -57,29 +58,10 @@ Route::middleware(['auth:sanctum', 'checkrole:admin'])
 
         // Projects CRUD
         Route::apiResource('projects', ProjectsController::class);
-        // Route::get('/projects', [ProjectsController::class, 'AdminIndex']);
-        // Route::get('/projects/{project}', [ProjectsController::class, 'show']);
-        // Route::post('/projects', [ProjectsController::class, 'store']);
-        // Route::get('projects', [ProjectsController::class, 'myProjects']);
-        // Route::put('/projects/{project}', [ProjectsController::class, 'update']);
-        // Route::delete('/projects/{project}', [ProjectsController::class, 'destroy']);
-
         // Categories CRUD
         Route::apiResource('categories', CategoryController::class);
-        // Route::get('/categories', [CategoryController::class, 'AdminIndex']);
-        // Route::get('/categories/{category}', [CategoryController::class, 'show',]);
-        // Route::post('/categories', [CategoryController::class, 'store']);
-        // Route::put('/categories/{category}', [CategoryController::class,'update']);
-        // Route::delete('/categories/{category}', [CategoryController::class, 'destroy',]);
-
         // Articles CRUD
         Route::apiResource('articles', ArticleController::class);
-        // Route::get('/articles', [ArticleController::class, 'AdminIndex']);
-        // Route::get('/articles/{article}', [ArticleController::class, 'show']);
-        // Route::post('/articles', [ArticleController::class, 'store']);
-        // Route::put('/articles/{article}', [ArticleController::class, 'update']);
-        // Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
-
         // Admin User CRUD
         Route::get('/users/{id}',fn($id) => response()->json(User::findOrFail($id)));
         Route::post('/users', [UserController::class, 'store']);
