@@ -30,6 +30,6 @@ class ArticleUpdateRequest extends FormRequest
             'project_id' => 'sometimes|required|exists:projects,id',
             'category_id' => 'sometimes|required|exists:categories,id'
         ];
-    }
 
+    }
 }

@@ -52,7 +52,7 @@ public function update(Request $request, Category $category)
     $this->authorize('delete', $category);
     $category->delete();
     return response()->json([
-      'message' => 'Deleted'
+      'message' => 'Verwijderd.'
     ]);
   }
 

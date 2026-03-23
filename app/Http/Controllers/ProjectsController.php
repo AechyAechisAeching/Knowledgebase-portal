@@ -9,49 +9,39 @@ class ProjectsController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+        public function index()
     {
         return Project::with(['category', 'article', 'workspace'])->latest()->get();
     }
-    // Create
-
-   
         public function store(ProjectsRequest $request){
         $data = $request->validated();
         $data['user_id'] = auth()->id();
         return Project::create($data);
     }
-    // Read
-    public function show(Project $project)
+        public function show(Project $project)
     {
         $this->authorize('view', $project);
         if ($project->user_id !== auth()->id() && auth()->user()->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return response()->json(['message' => 'Onbevoegd.'], 403);
         }
         return $project->load(['category', 'article', 'workspace']);
     }
-
-    // Update
-    public function update(Request $request, Project $project)
+        public function update(Request $request, Project $project)
     {
         $this->authorize('update', $project);
 
         $data = $request->validated();
-        $project->update($data);
-        // return response()->json($project);
-            return $project;
+        $project->update($data);    
+        return $project;
         }
-    // Delete
-    public function destroy(Project $project)
+    
+        public function destroy(Project $project)
     {
         $this->authorize('delete', $project);
         $project->delete();
-
         return response()->json(['deleted' => true]);
     }
-
-  
-  public function AdminIndex(Request $request) {
+        public function AdminIndex(Request $request) {
         $query = Project::with(['category', 'article', 'workspace']);
         if ($request->user_id) {
         $query->where('user_id', $request->user_id);
@@ -59,8 +49,7 @@ class ProjectsController extends Controller
 
          return response()->json($query->get());
     }
-
-     public function myProjects() {
+        public function myProjects() {
         return
         Project::with(['category', 'article', 'workspace'])->where('user_id', auth()->id())
         ->get();

@@ -31,7 +31,7 @@ class CategoryRequest extends FormRequest
     public function messages() {
         return [
         
-        'name.required' => 'Het invullen van een categorienaam is verplicht.'
+        'name.required' => 'Het invullen van een naam is verplicht.'
     ];
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\Category;
+// use App\Models\Article;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Project>
  */
@@ -28,6 +29,7 @@ public function definition(): array
         'description' => $this->faker->paragraph(),
         'slug' => Str::slug($projectname),
         'category_id' => Category::inRandomOrder()->first()->id,
+        // 'article_id' => Article::InRandomOrder()->first()->id,
         'user_id' => User::inRandomOrder()->first()->id,
     ];
 }

@@ -20,20 +20,20 @@ class AuthController extends Controller
 {
 
     public function register(RegisterRequest $request) {
-        $validated = $request->validated();
+        $data = $request->validated();
 
         $user = User::create([
-            'name'=> $validated['name'],
-            'email'=> $validated['email'],
-            'password'=> Hash::make($validated['password']),
-            'address' => $validated['address'],
-            'company' => $validated['company'],
-            'phone_number' => $validated['phone_number']
+            'name'=> $data['name'],
+            'email'=> $data['email'],
+            'password'=> Hash::make($data['password']),
+            'address' => $data['address'],
+            'company' => $data['company'],
+            'phone_number' => $data['phone_number']
         ]);
         
         $token = $user->createToken('api-token')->plainTextToken;
         return response()->json([
-            'message' => 'User Registered',
+            'message' => 'Geregistreerd!',
             'token'=> $token,
             'user'=> $user,
         ]);
@@ -48,14 +48,14 @@ class AuthController extends Controller
     ];
     
     if (!Auth::attempt($credentials)) {
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        return response()->json(['message' => 'Ongeldige inloggegevens.'], 401);
     }
     
     $user = Auth::user();
     $token = $user->createToken('token-name', ['server:update'])->plainTextToken;
     
     return response()->json([
-        'message' => 'User Logged in',
+        'message' => 'Ingelogd!',
         'token' => $token,
         'user' => $user,
     ]);
@@ -67,14 +67,14 @@ class AuthController extends Controller
     if (! $user) {
     return response()->json([
     'success' => false,    
-    'message'=> 'Unauthorized'],401);
+    'message'=> 'Onbevoegd!'],401);
 }
     
     $user->currentAccessToken()->delete();
 
     return response()->json([
         'success' => true,
-        'message' => 'Successfully logged out your account!'
+        'message' => 'Succesvol uitgelogd!'
         ],200);
 }
 
@@ -92,14 +92,14 @@ class AuthController extends Controller
         $user = $request->user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json(['message' => 'Current password is incorrect.'], 422);
+            return response()->json(['message' => 'Huidige wachtwoord is onjuist.'], 422);
         }
 
         $user->update(['password' => Hash::make($request->password)]);
         // Email
         Mail::to($user->email)->send(new ResetMail());
 
-        return response()->json(['message' => 'Password has been reset.']);
+        return response()->json(['message' => 'Wachtwoord is gereset.']);
     }
 
     /* --------------------------------------------------------------------------------------------------- 
@@ -122,7 +122,7 @@ class AuthController extends Controller
         );
         
         Mail::to($user->email)->send(new OtpMail($otp));
-        return response()->json(['message' => 'A verification code has been sent to your inbox.']);
+        return response()->json(['message' => 'Een verificatiecode is gestuurd naar jouw mail.']);
         }
 
      public function verifyOtp(Request $request) {
@@ -134,7 +134,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return response()->json([
-                'message' => 'not found.'    
+                'message' => 'Not Found.'    
             ], 404);
             
         }
@@ -144,9 +144,9 @@ class AuthController extends Controller
         ->where('expires_at', '>=', Carbon::now())->first();
         
         if (!$record || !Hash::check($request->otp, $record->token)) {
-            return response()->json(['message' => 'Invalid or expired.'], 422);
+            return response()->json(['message' => 'Onjuist of verlopen.'], 422);
         }
-        return response()->json(['message' => 'Code Verified.']);
+        return response()->json(['message' => 'Code geverifieerd.']);
         }
         public function newPassword(Request $request) {
         $request->validate([
@@ -174,7 +174,7 @@ class AuthController extends Controller
         $user->update(['password' => Hash::make($request->password)]);
         DB::table('password_reset_tokens')->where('user_id')->delete();
         Mail::to($user->email)->send(new ForgotMail());  
-        return response()->json(['message' => 'Password has been resetted.']);
+        return response()->json(['message' => 'Je wachtwoord is gereset.']);
            
         }
 }

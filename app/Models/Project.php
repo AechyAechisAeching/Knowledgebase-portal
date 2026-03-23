@@ -31,11 +31,14 @@ class Project extends Model
         return $this->belongsTo(Category::class);
     }
    
-    public function articles(): HasMany
+    public function article(): HasMany
     {
         return $this->hasMany(Article::class);
     }
-
+    // public function articles(): HasMany
+    // {
+    //     return $this->hasMany(Article::class);
+    // }
     public function workspace(): BelongsTo {
         return $this->belongsTo(Workspace::class);
     }

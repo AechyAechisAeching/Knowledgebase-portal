@@ -14,7 +14,7 @@ use AuthorizesRequests;
       $user->delete();
 
     return response()->json(
-  ['message' => 'User has been deleted.']);
+  ['message' => 'Gebruiker is verwijderd.']);
     }
 
     public function get($id) {

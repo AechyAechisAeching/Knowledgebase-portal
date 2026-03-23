@@ -27,7 +27,7 @@ class LogoutRequest extends FormRequest
     protected function failedAuthorization() {
         return response()->json([
             'success' => false,
-            'message'=> 'Unauthorized'
+            'message'=> 'Onbevoegd'
         ], 401)->send();
     }
 }

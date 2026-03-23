@@ -25,30 +25,26 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
-    // Klant: kan alleen lezen binnen eigen klantomgeving + (optioneel) feedback geven.
     //Ziet eigen projecten
-    //Kan artikelen lezen (alleen published)
-    //Zoekbalk binnen project (titel + content)
-    //(Optioneel) “Was dit nuttig?” + feedback tekstveld of met emojis
-
     Route::get('projects', [ProjectsController::class, 'myProjects']);
-    Route::get('projects/{project}', [ProjectsController::class, 'show']);
-    Route::get('projects/{project}', [ProjectsController::class, 'ProjectByIndex']);
+    // Klant: kan alleen lezen binnen eigen klantomgeving + (optioneel) feedback geven.
+    Route::get('projects/{project}', [ProjectsController::class, 'show']);    
+    //Zoekbalk binnen project (titel + content)
     Route::get('/projects/{project}/articles/search', [ArticleController::class, 'search']);
+    //Kan artikelen lezen (alleen published)
     Route::get('/projects/{project}/articles/{article}', [ArticleController::class, 'showPublished']);
+    //(Optioneel) “Was dit nuttig?” + feedback tekstveld of met emojis
     Route::post('/articles/{article}/feedback', [ArticleController::class, 'storeFeedback']);
     
     });
 
 
-    Route::middleware(['auth:sanctum', 'checkrole:admin'])->prefix('admin')->group(function () {
-    Route::get('/test', function () {
-            return response()->json(['message' => 'admin.']);
-        });
-
-        Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::middleware(['auth:sanctum', 'checkrole:admin'])->prefix('admin')->group(function () {        
         
         /* --------------------------Admin CRUD-------------------------- */
+        
+        
+        // Admin kan alles
 
         Route::apiResource('projects', ProjectsController::class);
         Route::apiResource('categories', CategoryController::class);

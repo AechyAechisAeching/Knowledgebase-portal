@@ -134,7 +134,7 @@ class WorkspaceController extends Controller
         $this->authorize('delete', $workspace);
         $workspace->delete();
         return
-        response()->json(['message' => 'Jouw workspace is verwijderd.']);
+        response()->json(['message' => 'Succesvol verwijderd.']);
     }
 
     public function index()

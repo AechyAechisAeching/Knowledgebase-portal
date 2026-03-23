@@ -11,7 +11,6 @@ use App\Models\Attachment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Project;
 use App\Models\Article;
-use App\Models\Workspace;
 use App\Http\Requests\ArticleRequest;
 use App\Http\Requests\FeedbackRequest;
 class ArticleController extends Controller
@@ -66,14 +65,6 @@ class ArticleController extends Controller
         }
 
 
-    public function ProjectByIndex(Project $project) {
-        
-    $this->authorize('view', $project);
-
-    $articles = $project->articles()->where('status', 'public')->get();
-    return response()->json($articles);
-    }
-
 
     public function showPublished(Project $project, Article $article)
     {
@@ -97,8 +88,10 @@ class ArticleController extends Controller
               ->orWhere('content', 'like', "%{$query}%")
               ->orWhere('summary', 'like', "%{$query}%");
         })->get();
-    return response()->json($articles);
+
+        return response()->json($articles);
 }
+
     public function projectArticles(Project $project)
     {
         $query = $project->article();

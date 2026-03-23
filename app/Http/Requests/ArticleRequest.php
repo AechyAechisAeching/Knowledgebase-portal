@@ -34,13 +34,16 @@ class ArticleRequest extends FormRequest
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool {
+        if (!$this->workspace_id) {
+            return true;
+        }
+
         $workspace = Workspace::find($this->workspace_id);
         if (!$workspace) {
             return false;
         }
         return $workspace->members()->where('user_id', auth()
         ->id())->exists();
-   
      }
      
     protected function prepareForValidation(): void
@@ -57,7 +60,7 @@ class ArticleRequest extends FormRequest
     return [
         'title.required' => 'Het invullen van een titel is verplicht.',
         'content.required' => 'Het invullen van een titel is verplicht.',
-        'workspace_id.required' => 'Je hebt een workspace nodig.',
+        'workspace_id.required' => 'Een workspace is verplicht om een project aan te maken.',
         'attachments.*.file' => 'Voeg een geldig bestand in.',
         'attachments.*.mimes' => 'Alleen jpg, png, pdf, doc en docx zijn toegestaan.',
         'attachments.*.max' => 'Een bestand mag niet groter zijn dan 10MB.',
