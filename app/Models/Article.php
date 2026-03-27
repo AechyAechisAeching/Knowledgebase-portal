@@ -27,7 +27,12 @@ class Article extends Model
     protected $casts = [
         'visibility' => 'string',
         'status' => 'string'
-    ];
+        ];
+
+
+        public function users() {
+            return $this->belongsTo(User::class);
+        }
     public function workspace() {
         return $this->belongsTo(Workspace::class);
     }

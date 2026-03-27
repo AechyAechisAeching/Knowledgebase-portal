@@ -10,8 +10,7 @@ class ProjectsController extends Controller
 {
     use AuthorizesRequests;
 
-     public function index()
-    {
+     public function index() {
        $projects = Project::with(['category', 'article', 'workspace'])
        ->visibleTo(auth()->user())->get();
         return response()->json($projects);

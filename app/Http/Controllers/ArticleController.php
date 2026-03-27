@@ -18,13 +18,13 @@ class ArticleController extends Controller
 
     use AuthorizesRequests;
     public function index() {
-        $articles = Article::visibleTo(auth()->user())->with(['project', 'category', 'attachments'])
+        $this->authorize('viewAny', Article::class);        
+        $articles = Article::where('status', 'published')
         ->latest()->get();
         return response()->json($articles);
     }
 
-   public function store(ArticleRequest $request): JsonResponse
-{
+   public function store(ArticleRequest $request) {
     $this->authorize('create', [Article::class, $request->project_id]);
     $data = $request->validated();
     $article = Article::create(Arr::except($data, ['attachments']));
@@ -48,8 +48,8 @@ class ArticleController extends Controller
 
     public function show(Article $article) { 
     $this->authorize('view', $article);
-    $article = Article::visibleTo(auth()->user())->with(['project', 'category', 'attachments'])
-    ->findOrFail($article->id);
+     $article = Article::where('status', 'published')
+     ->findOrFail($article->id);
 
     return response()->json($article);
     }
@@ -70,8 +70,7 @@ class ArticleController extends Controller
 
 
 
-    public function showPublished(Project $project, Article $article)
-{
+    public function showPublished(Project $project, Article $article) {
     abort_if($article->project_id !== $project->id, 404);
     abort_if($article->status !== 'published', 403);
     abort_if($article->visibility !== 'public', 403);
@@ -79,8 +78,7 @@ class ArticleController extends Controller
     return response()->json($article->load(['project', 'category', 'attachments']));
 }
 
-    public function search(Project $project, Request $request)
-    {
+    public function search(Project $project, Request $request) {
         $this->authorize('view', $project);
 
       $keyword = $request->input('keyword');
@@ -95,14 +93,11 @@ class ArticleController extends Controller
               ->orWhere('content', 'like', "%{$keyword}%")
               ->orWhere('summary', 'like', "%{$keyword}%");
         })->get();
-
         return response()->json($articles);
 }
 
-    public function projectArticles(Project $project)
-{
+    public function projectArticles(Project $project) {
     $this->authorize('view', $project);
-
     $articles = Article::visibleTo(auth()->user())
         ->where(['project', 'category', 'attachments'])
         ->where('project_id', $project->id)
@@ -114,17 +109,15 @@ class ArticleController extends Controller
     $data = $request->validated();
     $feedback = $article->feedbacks()->updateOrCreate(
         ['user_id' => auth()->id()],    
-        [
-            'helpful' => $data['helpful'],
-            'comment' => $data['comment'],
-
-            ]);
-    return response()->json($feedback, 201);
+        ['helpful' => $data['helpful'],
+         'comment' => $data['comment'],
+    ]);
+return response()->json($feedback, 201);
 }
     public function AdminIndex(Request $request)
     {
         $query = Article::visibleTo(auth()->user())
-            ->with(['project', 'category', 'attachments']);
+        ->with(['project', 'category', 'attachments']);
 
         if ($request->user_id) {
             $query->whereHas('project', function ($q) use ($request) {
