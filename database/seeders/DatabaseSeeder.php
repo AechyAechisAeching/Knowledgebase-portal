@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
         Workspace::factory()
         ->count(8)
         ->create();
-
+        
         Category::factory()
         ->count(7)
         ->create();

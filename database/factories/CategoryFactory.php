@@ -19,10 +19,11 @@ class CategoryFactory extends Factory
     protected $model = Category::class;
     public function definition(): array
     {
-        $name = $this->faker->unique()->sentence(2, false);
+        $name = $this->faker->unique()->sentence(2, true);
         return [
         'name' => $name,
         'slug' => Str::slug($name), 
+        'workspace_id' => \App\Models\Workspace::factory(),
 ];
     }
 }

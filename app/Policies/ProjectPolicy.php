@@ -33,6 +33,8 @@ private function inSameWorkspace(User $user, Project $project) {
 }
 
 public function view(User $user, Project $project) {
+    if (!$this->inSameWorkspace($user, $project)) return false;
+    
     return $project->workspace->members()
     ->where('user_id', $user->id)
     ->exists();
@@ -49,7 +51,7 @@ public function create(User $user, Project $project)
 
 public function update(User $user, Project $project)
 {
-    return $project->worksapce->members()
+    return $project->workspace->members()
     ->where('user_id', $user->id)
     ->wherePivotIn('role', ['owner', 'admin'])
     ->exists();
