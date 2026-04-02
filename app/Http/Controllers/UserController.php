@@ -15,7 +15,7 @@ use AuthorizesRequests;
       $user->delete();
 
     return response()->json(
-  ['message' => 'Gebruiker is verwijderd.']);
+    ['message' => 'Gebruiker is verwijderd.']);
     }
 
     public function update(UserRequest $request, User $user) {

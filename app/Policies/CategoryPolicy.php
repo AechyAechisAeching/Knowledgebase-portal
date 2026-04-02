@@ -14,10 +14,12 @@ public function before(User $user): ?bool {
 }
 
 public function view(User $user, Category $category) {
+    return $category->projects()
+    ->whereHas('workspace.members', fn($q) => $q->where('user_id', $user->id))
+    ->exists();
+    
+}
 
-    return in_array($user->role, ['admin', 'owner']) ||
-    $category->workspace->members->contains($user->id);
-    }
 
 public function create(User $user)
 {
