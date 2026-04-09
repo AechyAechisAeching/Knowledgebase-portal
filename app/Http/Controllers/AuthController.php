@@ -19,26 +19,25 @@ use App\Mail\OtpMail;
 class AuthController extends Controller
 {
 
-    public function register(RegisterRequest $request) {
-        $data = $request->validated();
+public function register(RegisterRequest $request)
+{
+    $data = $request->validated();
 
-        $user = User::create([
-            'name'=> $data['name'],
-            'email'=> $data['email'],
-            'password'=> Hash::make($data['password']),
-            'address' => $data['address'],
-            'company' => $data['company'],
-            'phone_number' => $data['phone_number']
-        ]);
-        
-        $token = $user->createToken('api-token')->plainTextToken;
-        return response()->json([
-            'message' => 'Geregistreerd!',
-            'token'=> $token,
-            'user'=> $user,
-        ]);
-    }
-   public function login(LoginRequest $request)
+    $user = User::create([
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'password' => Hash::make($data['password']),
+    ]);
+
+    $token = $user->createToken('api-token')->plainTextToken;
+    return response()->json([
+        'message' => 'Geregistreerd!',
+        'token' => $token,
+        'user' => $user,
+    ], 201);
+}
+
+public function login(LoginRequest $request)
 {
     $validated = $request->validated();
     
